@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -56,8 +58,8 @@ fun DisplayWeatherDetails(viewModel: WeatherViewModel = koinViewModel()) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .background(Color.White),
+                    .padding(16.dp,16.dp,16.dp,16.dp)
+                    .background(Color(0xFF00B2CA)),
             ) {
 
             }
@@ -67,11 +69,13 @@ fun DisplayWeatherDetails(viewModel: WeatherViewModel = koinViewModel()) {
             is UIState.Success -> {
                 DisplaySuccess(weatherResponse = (uiState as UIState.Success).data, padding = it)
             }
+
             UIState.Empty -> DisplayError(error = "Unknown Error")
             is UIState.Failure -> DisplayError(error = "Error retrieving data")
             is UIState.Loading -> CircularProgressIndicator(
-                Modifier.fillMaxSize()
-                    .padding(top = 120.dp, start = 32.dp)
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 160.dp, start = 32.dp)
             )
         }
     }
@@ -89,58 +93,89 @@ private fun DisplaySuccess(weatherResponse: MainDataModel, padding: PaddingValue
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = padding.calculateTopPadding())
+            .background(Color(0xFF00B2CA))
+            .padding(top = padding.calculateTopPadding()),
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "City Name: ${weatherResponse.name} ",
-            color = Color.Black,
+            color = Color.White,
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
         )
-        Row {
+        Row(
+            modifier = Modifier
+                .background(Color.White)
+        ) {
             Text(
                 text = "Latitude ${weatherResponse.coord?.lat ?: "unknown"} ",
                 color = Color.Black,
-                fontSize = 14.sp,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 0.dp)
             )
             Text(
                 text = "Longitude ${weatherResponse.coord?.lon ?: "unknown"} ",
                 color = Color.Black,
-                fontSize = 14.sp,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 0.dp)
             )
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(128.dp)
+                .padding(start = 16.dp, top = 5.dp, end = 16.dp, bottom = 5.dp)
+                .background(color = Color(0xFF1D4E89), shape = RoundedCornerShape(20.dp))
         ) {
             AsyncImage(
                 model = getImageUrl(weatherResponse.weather?.first()?.icon),
                 contentDescription = "UI_Image_Weather_Icon",
                 modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.Magenta)
+                    .size(120.dp)
+                    .background(Color(0Xfff79256),shape = RoundedCornerShape(20.dp))
             )
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(8.dp)
             ) {
-                Text(text = "${weatherResponse.main?.temp?.toInt()}K", fontSize = 20.sp)
+                Text(
+                    modifier = Modifier
+                        .padding(0.dp,0.dp,180.dp,0.dp),
+                    text = "${weatherResponse.main?.temp?.toInt()}K",
+                    fontSize = 15.sp,
+                    color = Color.White
+                )
                 Text(
                     text = "${weatherResponse.main?.temp?.toCelsius()?.toInt()}\u00B0C",
-                    fontSize = 20.sp
+                    fontSize = 15.sp,
+                    color = Color.White
                 )
                 Text(
                     text = "${weatherResponse.main?.temp?.toFahrenheit()?.toInt()}\u00B0F",
-                    fontSize = 20.sp
+                    fontSize = 15.sp,
+                    color = Color.White
                 )
             }
         }
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(128.dp)
+                .padding(start = 16.dp, top = 5.dp, end = 16.dp, bottom = 5.dp)
+                .background(color = Color(0xFF1D4E89), shape = RoundedCornerShape(20.dp))
+        ) {
             Text(
+                modifier = Modifier.padding(8.dp),
+                color = Color.White,
                 text = "Feels like ${
                     weatherResponse.main?.feelsLike?.toCelsius()?.toInt()
                 }°C. "
             )
             Text(
+                color = Color.White,
                 text = "${
                     weatherResponse.weather?.first()?.description.toString().replaceFirstChar {
                         it.uppercase()
@@ -148,17 +183,41 @@ private fun DisplaySuccess(weatherResponse: MainDataModel, padding: PaddingValue
                 }."
             )
         }
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(128.dp)
+                .padding(start = 16.dp, top = 5.dp, end = 16.dp, bottom = 5.dp)
+                .background(color = Color(0xFF1D4E89), shape = RoundedCornerShape(20.dp))
+        ) {
             Text(
                 text = "Pressure: ${weatherResponse.main?.pressure} hPa",
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
+                color = Color.White
             )
             Text(
                 text = "Humidity: ${weatherResponse.main?.humidity}%",
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
+                color = Color.White
             )
         }
-        Text(text = "Visibility: ${weatherResponse.visibility?.toKilometer().toString()}")
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(128.dp)
+                .padding(start = 16.dp, top = 5.dp, end = 16.dp, bottom = 15.dp)
+                .background(color = Color(0xFF1D4E89), shape = RoundedCornerShape(20.dp))
+        ) {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                color = Color.White,
+                text = "Visibility: ${weatherResponse.visibility?.toKilometer().toString()}"
+            )
+        }
     }
 }
 
@@ -167,4 +226,3 @@ private fun getImageUrl(iconCode: String?): String =
         .append(iconCode)
         .append("@4x.png")
         .toString()
-
