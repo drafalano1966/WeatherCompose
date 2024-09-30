@@ -1,4 +1,3 @@
-/*
 package com.example.weathercompose.viewmodel
 
 import com.example.weathercompose.data.MainDataModel
@@ -10,6 +9,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.just
+import io.mockk.mockk
 import io.mockk.runs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -51,7 +51,7 @@ class WeatherViewModelTest{
     fun `fetchWeatherDetails should update weatherResponseState`() = runTest {
         // Given
         val searchText = "London"
-        val uiState = UIState.Success(MainDataModel())
+        val uiState = UIState.Success(MainDataModel("", mockk(),0, mockk(),0,0, mockk(), "", mockk(), mockk(),0,0, mockk(), mockk()))
         coEvery { repository.getWeatherDetails(searchText) } returns flowOf(uiState)
 
         // When
@@ -106,4 +106,3 @@ class WeatherViewModelTest{
         coVerify { dataStore.saveToken(searchText) }
     }
 }
-*/
